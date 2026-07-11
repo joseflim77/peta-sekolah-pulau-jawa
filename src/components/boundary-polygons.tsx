@@ -9,6 +9,7 @@ export type DistrictAggregation = {
   regencyName: string;
   total: number;
   students: number;
+  stekomStudents: number;
 };
 
 interface BoundaryPolygonsProps {

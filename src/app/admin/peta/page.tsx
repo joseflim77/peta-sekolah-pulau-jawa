@@ -1,3 +1,4 @@
+import { DistrictAggregationSection } from "@/components/district-aggregation-section";
 import { MapFilters } from "@/components/map-filters";
 import { SchoolMap } from "@/components/school-map";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -85,6 +86,7 @@ export default async function MapPage({
 
   const totalSchools = items.length;
   const totalStudents = items.reduce((sum, school) => sum + school.jumlah_siswa, 0);
+  const totalStekomStudents = items.reduce((sum, school) => sum + school.jumlah_mahasiswa_stekom, 0);
 
   const byType = items.reduce<Record<string, number>>((acc, school) => {
     acc[school.bentuk_pendidikan] = (acc[school.bentuk_pendidikan] ?? 0) + 1;
@@ -105,6 +107,7 @@ export default async function MapPage({
           regencyName: string;
           total: number;
           students: number;
+          stekomStudents: number;
         }
       >
     >((acc, school) => {
@@ -115,11 +118,13 @@ export default async function MapPage({
           regencyName: school.districts?.regencies?.name ?? "-",
           total: 0,
           students: 0,
+          stekomStudents: 0,
         };
       }
 
       acc[key].total += 1;
       acc[key].students += school.jumlah_siswa;
+      acc[key].stekomStudents += school.jumlah_mahasiswa_stekom;
       return acc;
     }, {});
 
@@ -135,9 +140,10 @@ export default async function MapPage({
             Marker diambil dari koordinat sekolah yang diinput admin.
           </p>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-3">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
           <Metric label="Total Sekolah" value={totalSchools} />
           <Metric label="Total Siswa" value={totalStudents} />
+          <Metric label="Mahasiswa STEKOM" value={totalStekomStudents} />
           <Metric label="SMA" value={byType.SMA ?? 0} />
           <Metric label="SMK" value={byType.SMK ?? 0} />
           <Metric label="MA" value={byType.MA ?? 0} />
@@ -163,35 +169,7 @@ export default async function MapPage({
         <SchoolMap schools={items} boundaries={boundaries} aggregations={byDistrict} />
       </div>
 
-      {districtAggregations.length > 0 && (
-        <section className="rounded-lg border border-slate-200 bg-white shadow-sm overflow-hidden">
-          <div className="border-b border-slate-200 px-5 py-4">
-            <h2 className="text-base font-semibold text-slate-950">Agregasi Kecamatan</h2>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 text-xs uppercase text-slate-500">
-                <tr>
-                  <th className="px-4 py-3">Kecamatan</th>
-                  <th className="px-4 py-3">Kabupaten/Kota</th>
-                  <th className="px-4 py-3 text-right">Sekolah</th>
-                  <th className="px-4 py-3 text-right">Siswa</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-200">
-                {districtAggregations.map((row, idx) => (
-                  <tr key={idx}>
-                    <td className="px-4 py-3 font-medium text-slate-950">{row.districtName}</td>
-                    <td className="px-4 py-3 text-slate-600">{row.regencyName}</td>
-                    <td className="px-4 py-3 text-right text-slate-600">{row.total.toLocaleString("id-ID")}</td>
-                    <td className="px-4 py-3 text-right text-slate-600">{row.students.toLocaleString("id-ID")}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-      )}
+      {districtAggregations.length > 0 ? <DistrictAggregationSection rows={districtAggregations} /> : null}
     </div>
   );
 }

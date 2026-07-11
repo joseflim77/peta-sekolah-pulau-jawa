@@ -1,6 +1,6 @@
 "use client";
 
-import { APIProvider, InfoWindow, Map, Marker } from "@vis.gl/react-google-maps";
+import { AdvancedMarker, APIProvider, InfoWindow, Map } from "@vis.gl/react-google-maps";
 import { ExternalLink } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 
@@ -114,7 +114,7 @@ export function SchoolMap({
           gestureHandling="greedy"
           mapId="peta-sekolah"
           style={{ width: "100%", height: "100%" }}
-          center={viewport.center}
+          defaultCenter={viewport.center}
         >
           <BoundaryPolygons
             boundaries={boundaries}
@@ -123,14 +123,25 @@ export function SchoolMap({
           />
 
           {schools.map((school) => (
-            <Marker
+            <AdvancedMarker
               key={school.id}
               position={{ lat: school.latitude, lng: school.longitude }}
               onClick={() => {
                 setSelectedSchoolId(school.id);
                 setSelectedBoundaryCode(null);
               }}
-            />
+              zIndex={10}
+            >
+              <div className="flex -translate-y-2 flex-col items-center">
+                <div className="mb-1 min-w-7 rounded-full border border-emerald-200 bg-white px-2 py-0.5 text-center text-xs font-semibold text-emerald-700 shadow-md">
+                  {school.jumlah_mahasiswa_stekom.toLocaleString("id-ID")}
+                </div>
+                <div className="relative size-8">
+                  <div className="absolute left-1/2 top-1/2 size-7 -translate-x-1/2 -translate-y-1/2 rotate-45 rounded-[50%_50%_50%_0] border-2 border-white bg-emerald-600 shadow-md" />
+                  <div className="absolute left-1/2 top-1/2 size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white" />
+                </div>
+              </div>
+            </AdvancedMarker>
           ))}
 
           {selectedSchool ? (
@@ -181,6 +192,10 @@ export function SchoolMap({
                 <div className="grid gap-1 mb-1">
                   <p><span className="text-slate-500">Total Sekolah:</span> {selectedBoundaryStats?.total ?? 0}</p>
                   <p><span className="text-slate-500">Total Siswa:</span> {(selectedBoundaryStats?.students ?? 0).toLocaleString("id-ID")}</p>
+                  <p>
+                    <span className="text-slate-500">Mahasiswa STEKOM:</span>{" "}
+                    {(selectedBoundaryStats?.stekomStudents ?? 0).toLocaleString("id-ID")}
+                  </p>
                   {selectedBoundary.area_sqkm ? (
                     <p><span className="text-slate-500">Luas Area:</span> {formatArea(selectedBoundary.area_sqkm)} km2</p>
                   ) : null}

@@ -13,10 +13,18 @@ export async function logAuthActivity({
   user: User;
   userAgent?: string | null;
 }) {
-  await supabase.from("auth_activity_logs").insert({
+  const { error } = await supabase.from("auth_activity_logs").insert({
     actor_id: user.id,
     actor_email: user.email ?? "unknown",
     event_type: eventType,
     user_agent: userAgent ?? null,
   });
+
+  if (error) {
+    console.error("Failed to write auth activity log", {
+      eventType,
+      userId: user.id,
+      message: error.message,
+    });
+  }
 }

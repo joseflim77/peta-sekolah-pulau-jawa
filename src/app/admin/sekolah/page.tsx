@@ -107,7 +107,7 @@ export default async function SchoolsPage({
       <header className="mb-6 flex flex-col lg:flex-row lg:items-start justify-between gap-6">
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-emerald-700">Manajemen Data Sekolah</p>
-          <h1 className="mt-1 text-2xl font-semibold text-slate-950">Data Sekolah Kota Semarang</h1>
+          <h1 className="mt-1 text-2xl font-semibold text-slate-950">Data Sekolah Jawa Tengah</h1>
           <p className="mt-2 max-w-2xl text-sm text-slate-600 truncate sm:whitespace-normal">
             Tambahkan sekolah secara manual, cek NPSN, dan kelola data dasar untuk marker peta.
           </p>

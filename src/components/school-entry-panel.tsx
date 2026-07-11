@@ -101,13 +101,22 @@ export function SchoolEntryPanel({
                     Menu import massal akan memvalidasi NPSN, mencatat baris duplicate yang ditolak, lalu menyimpan
                     baris valid.
                   </p>
-                  <a
-                    className="mt-4 inline-flex h-10 items-center gap-2 rounded-md bg-slate-950 px-4 text-sm font-semibold text-white transition hover:bg-slate-800"
-                    href="/api/templates/schools"
-                  >
-                    <Download className="size-4" aria-hidden="true" />
-                    Download Format Excel
-                  </a>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <a
+                      className="inline-flex h-10 items-center gap-2 rounded-md bg-slate-950 px-4 text-sm font-semibold text-white transition hover:bg-slate-800"
+                      href="/api/templates/schools"
+                    >
+                      <Download className="size-4" aria-hidden="true" />
+                      Download Excel
+                    </a>
+                    <a
+                      className="inline-flex h-10 items-center gap-2 rounded-md border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
+                      href="/api/templates/schools?format=csv"
+                    >
+                      <Download className="size-4" aria-hidden="true" />
+                      Download CSV
+                    </a>
+                  </div>
                   <form action={importSchoolsAction} className="mt-5 grid gap-3">
                     <label className="grid max-w-xl gap-1 text-left text-sm font-medium text-slate-700">
                       Upload file CSV/XLS/XLSX

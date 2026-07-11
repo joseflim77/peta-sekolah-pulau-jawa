@@ -1,3 +1,5 @@
+import type { NextRequest } from "next/server";
+
 const headers = [
   "nama_sekolah",
   "npsn",
@@ -30,20 +32,21 @@ const sample = [
   "https://maps.google.com/",
 ];
 
-function cell(value: string) {
-  return `<Cell><Data ss:Type="String">${escapeXml(value)}</Data></Cell>`;
-}
+export function GET(request: NextRequest) {
+  const format = request.nextUrl.searchParams.get("format");
 
-function escapeXml(value: string) {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&apos;");
-}
+  if (format === "csv") {
+    const csv = [headers, sample].map((row) => row.map(csvCell).join(",")).join("\r\n");
 
-export function GET() {
+    return new Response(csv, {
+      headers: {
+        "Cache-Control": "no-store",
+        "Content-Disposition": 'attachment; filename="template-import-sekolah-v2.csv"',
+        "Content-Type": "text/csv; charset=utf-8",
+      },
+    });
+  }
+
   const workbook = `<?xml version="1.0"?>
 <?mso-application progid="Excel.Sheet"?>
 <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
@@ -62,7 +65,7 @@ export function GET() {
    <Row>${cell("Kolom koordinat wajib memakai format latitude, longitude.")}</Row>
    <Row>${cell("Bentuk pendidikan hanya boleh SMA, SMK, atau MA.")}</Row>
    <Row>${cell("Status hanya boleh Negeri atau Swasta.")}</Row>
-   <Row>${cell("Kolom jumlah_mahasiswa_stekom berisi jumlah siswa/alumni sekolah tersebut yang menjadi mahasiswa Univ STEKOM.")}</Row>
+   <Row>${cell("Kolom jumlah_mahasiswa_stekom wajib ada dan berisi jumlah siswa/alumni sekolah tersebut yang menjadi mahasiswa Univ STEKOM. Isi 0 jika belum ada data.")}</Row>
    <Row>${cell("NPSN yang sudah ada akan ditolak saat import.")}</Row>
   </Table>
  </Worksheet>
@@ -70,8 +73,27 @@ export function GET() {
 
   return new Response(workbook, {
     headers: {
-      "Content-Disposition": 'attachment; filename="template-import-sekolah.xls"',
+      "Cache-Control": "no-store",
+      "Content-Disposition": 'attachment; filename="template-import-sekolah-v2.xls"',
       "Content-Type": "application/vnd.ms-excel; charset=utf-8",
     },
   });
+}
+
+function cell(value: string) {
+  return `<Cell><Data ss:Type="String">${escapeXml(value)}</Data></Cell>`;
+}
+
+function csvCell(value: string) {
+  if (!/[",\r\n]/.test(value)) return value;
+  return `"${value.replaceAll('"', '""')}"`;
+}
+
+function escapeXml(value: string) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&apos;");
 }

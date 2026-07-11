@@ -104,11 +104,11 @@ export default async function SchoolsPage({
 
   return (
     <div className="px-6 py-6">
-      <header className="mb-6 flex flex-wrap items-start justify-between gap-4">
-        <div>
+      <header className="mb-6 flex flex-col lg:flex-row lg:items-start justify-between gap-6">
+        <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-emerald-700">Manajemen Data Sekolah</p>
           <h1 className="mt-1 text-2xl font-semibold text-slate-950">Data Sekolah Kota Semarang</h1>
-          <p className="mt-2 max-w-2xl text-sm text-slate-600">
+          <p className="mt-2 max-w-2xl text-sm text-slate-600 truncate sm:whitespace-normal">
             Tambahkan sekolah secara manual, cek NPSN, dan kelola data dasar untuk marker peta.
           </p>
         </div>
@@ -187,7 +187,7 @@ export default async function SchoolsPage({
         </section>
       ) : null}
 
-      <section className="flex flex-col max-h-[1000px] overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+      <section className="flex flex-col max-h-[800px] overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
         <div className="shrink-0 border-b border-slate-200 px-5 py-4 bg-white">
           <h2 className="text-base font-semibold text-slate-950">Daftar Sekolah</h2>
         </div>
@@ -196,12 +196,12 @@ export default async function SchoolsPage({
             <thead className="sticky top-0 z-10 bg-slate-50 shadow-[0_1px_0_0_#e2e8f0] text-xs uppercase text-slate-500">
               <tr>
                 <th className="w-[320px] px-4 py-3">Nama Sekolah</th>
-                <th className="px-4 py-3">NPSN</th>
-                <th className="px-4 py-3">Bentuk</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3">Siswa</th>
-                <th className="px-4 py-3">Mahasiswa STEKOM</th>
-                <th className="px-4 py-3">Kelas</th>
+                <th className="px-4 py-3 text-center">NPSN</th>
+                <th className="px-4 py-3 text-center">Bentuk</th>
+                <th className="px-4 py-3 text-center">Status</th>
+                <th className="px-4 py-3 text-center">Siswa</th>
+                <th className="px-4 py-3 text-center">Mahasiswa STEKOM</th>
+                <th className="px-4 py-3 text-center">Kelas</th>
                 <th className="px-4 py-3">Kecamatan</th>
                 <th className="px-4 py-3">Link</th>
                 <th className="px-4 py-3"></th>
@@ -210,26 +210,26 @@ export default async function SchoolsPage({
             <tbody className="divide-y divide-slate-200">
               {(schools ?? []).length > 0 ? (
                 (schools ?? []).map((school) => (
-                  <tr key={school.id} className="align-top">
-                    <td className="px-4 py-3">
+                  <tr key={school.id} className="align-middle">
+                    <td className="px-4 py-3 align-middle">
                       <div className="w-[300px] truncate whitespace-nowrap font-medium text-slate-950">
                         {school.nama_sekolah}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-slate-600">{school.npsn}</td>
-                    <td className="px-4 py-3 text-slate-600">{school.bentuk_pendidikan}</td>
-                    <td className="px-4 py-3 text-slate-600">{school.status}</td>
-                    <td className="px-4 py-3 text-slate-600">{school.jumlah_siswa}</td>
-                    <td className="px-4 py-3 text-slate-600">{school.jumlah_mahasiswa_stekom}</td>
-                    <td className="px-4 py-3 text-slate-600">{school.ruang_kelas}</td>
-                    <td className="px-4 py-3 text-slate-600">{school.districts?.name ?? "-"}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex gap-2">
+                    <td className="px-4 py-3 text-center align-middle text-slate-600">{school.npsn}</td>
+                    <td className="px-4 py-3 text-center align-middle text-slate-600">{school.bentuk_pendidikan}</td>
+                    <td className="px-4 py-3 text-center align-middle text-slate-600">{school.status}</td>
+                    <td className="px-4 py-3 text-center align-middle text-slate-600">{school.jumlah_siswa}</td>
+                    <td className="px-4 py-3 text-center align-middle text-slate-600">{school.jumlah_mahasiswa_stekom}</td>
+                    <td className="px-4 py-3 text-center align-middle text-slate-600">{school.ruang_kelas}</td>
+                    <td className="px-4 py-3 align-middle text-slate-600">{school.districts?.name ?? "-"}</td>
+                    <td className="px-4 py-3 align-middle">
+                      <div className="flex flex-col items-start gap-2">
                         {school.link_dapodik ? <TableLink href={school.link_dapodik} label="Dapodik" /> : null}
                         {school.link_google_maps ? <TableLink href={school.link_google_maps} label="Maps" /> : null}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-right">
+                    <td className="px-4 py-3 text-right align-middle">
                       <div className="flex justify-end gap-2">
                         <EditSchoolModal
                           provinces={provinces ?? []}
